@@ -24,12 +24,11 @@ export default function Tables() {
 
   const [state, setState] = useState({cpu_power: 11.837, cpu_percent: 48.5})
   const [cpuData, setCpuState] = useState(cpus)
-// 
-// http://54.167.64.55/powers/`
+ 
+// http://127.0.0.1:8000/powers
   useEffect(() => {
     setInterval(()=>{
-      axios(`http://127.0.0.1:8000/powers`).then(({data}, err)=>{
-        console.log(data);
+      axios(`http://54.167.64.55/powers/`).then(({data}, err)=>{
         const {cpu_power, cpu_percent, running_process_power} = data
         setState({cpu_power, cpu_percent})
         setCpuState(running_process_power)
