@@ -1,61 +1,51 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import axios from 'axios'
+
+// "cpu_power": 5.666,
+//   "cpu_percent": 43.4,
+//   "running_process_power": [
+//     {
+//       "pid": 0,
+//       "name": "System Idle Process",
+//       "process_cpu_percent": 2.301,
+//       "power": 5.658260244000001
+//     },
 
 const cpus = [
   {
-    pd: "127",
-    name: "Chrome",
-    cpupercent: "22%",
-    cpupower: "30",
+    "pid": "127",
+    "name": "Chrome",
+    "process_cpu_percent": "22%",
+    "power": "30",
   },
-  {
-    pd: "127",
-    name: "Chrome",
-    cpupercent: "22%",
-    cpupower: "30",
-  },
-  {
-    pd: "127",
-    name: "Chrome",
-    cpupercent: "22%",
-    cpupower: "30",
-  },
-  {
-    pd: "127",
-    name: "Chrome",
-    cpupercent: "22%",
-    cpupower: "30",
-  },
-  {
-    pd: "127",
-    name: "Chrome",
-    cpupercent: "22%",
-    cpupower: "30",
-  },
-  {
-    pd: "127",
-    name: "Chrome",
-    cpupercent: "22%",
-    cpupower: "30",
-  },
-  {
-    pd: "127",
-    name: "Chrome",
-    cpupercent: "22%",
-    cpupower: "30",
-  },
-  
 ];
 
 export default function Tables() {
+
+  const [state, setState] = useState({cpu_power: 11.837, cpu_percent: 48.5})
+  const [cpuData, setCpuState] = useState(cpus)
+// 
+// http://54.167.64.55/powers/`
+  useEffect(() => {
+    setInterval(()=>{
+      axios(`http://127.0.0.1:8000/powers`).then(({data}, err)=>{
+        console.log(data);
+        const {cpu_power, cpu_percent, running_process_power} = data
+        setState({cpu_power, cpu_percent})
+        setCpuState(running_process_power)
+      })
+    }, 10000)
+  }, []);
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className=" mt-10 text-xl font-semibold text-gray-900">
-            Total CPU :{" "}
+            Total CPU Percentage : {state?.cpu_percent} %
           </h1>
           <h1 className=" mt-10 text-xl font-semibold text-gray-900">
-            Total CPU-Power :{" "}
+            Total CPU-Power : {state?.cpu_power} Watt
           </h1>
           <p className="mt-2 text-sm text-gray-700">
             This is the description of all cpu details
@@ -69,13 +59,6 @@ export default function Tables() {
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   <tr>
-                  
-                    <th
-                      scope="col"
-                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                    >
-                      PD
-                    </th>
                     <th
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
@@ -103,19 +86,19 @@ export default function Tables() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {cpus.map((cpu) => (
+                  {cpuData.map((cpu) => (
                     <tr key={cpu.cpupercent}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                        {cpu.pd}
+                        {cpu["pid"]}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {cpu.name}
+                        {cpu["name"]}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {cpu.cpupercent}
+                        {cpu["process_cpu_percent"]}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {cpu.cpupower}
+                        {cpu["power"]}
                       </td>
                     </tr>
                   ))}
